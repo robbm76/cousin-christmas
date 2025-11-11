@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cousins Gift Exchange Login 🎄</title>
+  <title>Cousins Gift Exchange 🎄</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(120deg, #c31432, #240b36);
+      background: radial-gradient(circle at top, #ff4b2b, #240b36);
       color: white;
       text-align: center;
       display: flex;
@@ -30,8 +30,9 @@
       border-radius: 10px;
       border: none;
       margin-top: 10px;
-      width: 200px;
+      width: 220px;
       text-align: center;
+      letter-spacing: 2px;
     }
     button {
       margin-top: 15px;
@@ -44,16 +45,14 @@
       font-weight: bold;
       transition: 0.3s;
     }
-    button:hover {
-      background: #ffef7e;
-    }
+    button:hover { background: #fff176; }
     .error { color: #ff8080; margin-top: 10px; }
   </style>
 </head>
 <body>
   <div class="login-box">
-    <h1>🎅 Cousins Gift Exchange 2025 🎁</h1>
-    <p>Enter your personal gift code:</p>
+    <h1>🎁 Cousins Gift Exchange 2025 🎄</h1>
+    <p>Enter your unique reindeer code:</p>
     <input type="password" id="password" placeholder="Enter code..." />
     <button onclick="checkPassword()">Enter</button>
     <div id="error" class="error"></div>
@@ -61,28 +60,45 @@
 
   <script>
     const codes = {
-      "HX9A-ISA-723": "Isaiah",
-      "HX9A-AND-811": "Andrew",
-      "HX9A-JUS-214": "Justin",
-      "HX9A-HAD-395": "Haddon",
-      "HX9A-GRA-622": "Grayson",
-      "HX9A-AIN-447": "Ainsley",
-      "HX9A-JON-506": "Jon",
-      "HX9A-LEX-983": "Lexi"
+      "DASHER742": "Isaiah",
+      "DANCER314": "Andrew",
+      "PRANCER808": "Justin",
+      "VIXEN226": "Haddon",
+      "COMET519": "Grayson",
+      "CUPID981": "Ainsley",
+      "DONNER434": "Jon",
+      "BLITZEN105": "Lexi",
+
+      // Test codes
+      "1001": "Test01",
+      "1002": "Test02",
+      "1003": "Test03",
+      "1004": "Test04",
+      "1005": "Test05",
+      "1006": "Test06",
+      "1007": "Test07",
+      "1008": "Test08",
+      "1009": "Test09",
+      "1010": "Test10",
+      "1011": "Test11",
+      "1012": "Test12",
+      "1013": "Test13",
+      "1014": "Test14",
+      "1015": "Test15",
+      "1016": "Test16"
     };
 
     function checkPassword() {
-      const input = document.getElementById('password').value.trim();
+      const input = document.getElementById('password').value.trim().toUpperCase();
       const error = document.getElementById('error');
 
       if (codes[input]) {
         sessionStorage.setItem('cousinName', codes[input]);
         window.location.href = 'wheel.html';
       } else {
-        error.textContent = "Invalid code. Try again.";
+        error.textContent = "Invalid code. Please try again or check with Josh 🎅";
       }
     }
   </script>
 </body>
 </html>
-
