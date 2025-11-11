@@ -1,339 +1,88 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Cousin Gift Exchange — Spin the Wheel 🎄</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg:#08121a;
-    --card:#0f1720;
-    --accent:#c0262e; /* red */
-    --accent-2:#0ea5a4; /* teal/green-ish */
-    --gold:#f59e0b;
-    --muted:#9ca3af;
-  }
-  html,body{height:100%;margin:0;background:
-    radial-gradient(ellipse at top left, rgba(255,255,255,0.03), transparent 20%),
-    linear-gradient(180deg,#041018 0%, #071522 60%); color:#e6eef6; font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
-  .page{max-width:980px;margin:28px auto;padding:28px;}
-  header{display:flex;align-items:center;gap:18px}
-  .logo{
-    width:84px;height:84px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--gold));
-    display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:28px;box-shadow:0 6px 20px rgba(0,0,0,0.6);
-  }
-  h1{margin:0;font-size:22px}
-  p.lead{color:var(--muted);margin-top:6px}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px;border-radius:12px;margin-top:18px;box-shadow:0 6px 30px rgba(2,6,23,0.6)}
-  .top-row{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
-  .form-inline{display:flex;gap:12px;align-items:center}
-  select,name-input{padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-  .btn{background:var(--accent);border:none;padding:10px 14px;border-radius:10px;color:white;font-weight:700;cursor:pointer}
-  .btn:disabled{opacity:0.55;cursor:not-allowed}
-  .secondary{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px;color:var(--muted)}
-  .link-input{width:420px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
-  .flex{display:flex;gap:18px}
-  .wheel-wrap{display:flex;gap:24px;align-items:center;justify-content:center;flex-wrap:wrap;padding:28px}
-  .wheel-container{width:420px;height:420px;position:relative}
-  #wheel{width:100%;height:100%;transition:transform 5s cubic-bezier(.12,.8,.32,1);border-radius:50%;overflow:visible;filter:drop-shadow(0 10px 30px rgba(0,0,0,0.6))}
-  .wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;}
-  .pointer{
-    position:absolute;left:50%;top:-12px;transform:translateX(-50%);
-    width:28px;height:60px;background:linear-gradient(180deg,#fff,#eee);border-radius:8px 8px 4px 4px;box-shadow:0 6px 16px rgba(0,0,0,0.5);display:flex;align-items:flex-end;justify-content:center;
-  }
-  .pointer::after{content:"";display:block;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:12px solid #8b1b18;border-bottom:4px solid rgba(255,255,255,0.08);margin-bottom:4px}
-  .result{margin-top:14px;font-weight:800;font-size:20px;color:var(--gold)}
-  .muted{color:var(--muted);font-size:13px}
-  footer{margin-top:22px;color:var(--muted);font-size:13px}
-  .names-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-  .name-pill{background:rgba(255,255,255,0.02);padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.02)}
-  .centered{display:flex;align-items:center;justify-content:center;flex-direction:column}
-  @media (max-width:760px){ .wheel-container{width:320px;height:320px} .link-input{width:100%}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cousins Gift Exchange Login 🎄</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(120deg, #c31432, #240b36);
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+    }
+    input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 10px;
+      border: none;
+      margin-top: 10px;
+      width: 200px;
+      text-align: center;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 25px;
+      background: #ffd700;
+      color: #333;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ffef7e;
+    }
+    .error { color: #ff8080; margin-top: 10px; }
+  </style>
 </head>
 <body>
-<div class="page">
-  <header>
-    <div class="logo">🎁</div>
-    <div>
-      <h1>Cousin Gift Exchange 2025 — Spin the Wheel 🎄</h1>
-      <p class="lead">Add your wishlist, then pick your name and spin. The wheel looks random — but you’re assigned to the right cousin. Keep it a secret!</p>
-    </div>
-  </header>
-
-  <div class="card">
-    <div class="top-row">
-      <div style="flex:1">
-        <label class="muted">Wishlist form (optional)</label><br>
-        <input id="wishlistUrl" class="link-input" placeholder="Paste Google Form URL here (optional)">
-      </div>
-      <div style="display:flex;flex-direction:column;justify-content:flex-end">
-        <a id="openFormBtn" class="btn" href="#" target="_blank" style="text-decoration:none">Open wishlist form</a>
-      </div>
-    </div>
-
-    <div style="margin-top:18px" class="card">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <div style="min-width:220px;">
-          <label class="muted">Select your name</label><br>
-          <select id="picker" style="width:100%;padding:10px;border-radius:8px;background:transparent;color:inherit">
-            <option value="">-- choose your name --</option>
-          </select>
-        </div>
-
-        <div>
-          <button id="spinBtn" class="btn" style="font-size:16px;padding:12px 18px">🎡 Spin the Wheel</button>
-        </div>
-
-        <div style="margin-left:auto" class="muted">
-          <div style="text-align:right">One spin per browser. Results are secret — don’t spoil the surprise!</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="wheel-wrap">
-      <div class="wheel-container centered">
-        <div class="pointer" aria-hidden="true"></div>
-        <svg id="wheel" viewBox="-250 -250 500 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spin wheel"></svg>
-        <div class="wheel-center">
-          <div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(180deg,#fff,#ffe7d0);display:flex;align-items:center;justify-content:center;font-weight:800;color:#7b2a1a;">
-            <div style="text-align:center">🎄<br><small style="font-weight:600">Spin</small></div>
-          </div>
-        </div>
-      </div>
-
-      <div style="max-width:420px">
-        <div class="card" style="padding:14px">
-          <div class="muted">Players (families grouped)</div>
-          <div class="names-list" id="namesList"></div>
-          <div style="margin-top:12px">
-            <div class="muted">Result</div>
-            <div id="resultText" class="result">No one has spun yet.</div>
-            <div id="subText" class="muted" style="margin-top:8px"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <footer class="muted">Hosted locally — copy this file to your hosting provider and paste your wishlist form URL above.</footer>
+  <div class="login-box">
+    <h1>🎅 Cousins Gift Exchange 2025 🎁</h1>
+    <p>Enter your personal gift code:</p>
+    <input type="password" id="password" placeholder="Enter code..." />
+    <button onclick="checkPassword()">Enter</button>
+    <div id="error" class="error"></div>
   </div>
-</div>
 
-<!-- confetti lib -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const codes = {
+      "HX9A-ISA-723": "Isaiah",
+      "HX9A-AND-811": "Andrew",
+      "HX9A-JUS-214": "Justin",
+      "HX9A-HAD-395": "Haddon",
+      "HX9A-GRA-622": "Grayson",
+      "HX9A-AIN-447": "Ainsley",
+      "HX9A-JON-506": "Jon",
+      "HX9A-LEX-983": "Lexi"
+    };
 
-<script>
-/*
-  Cousin Gift Exchange — single file app
-  - Edit WISHLIST_FORM_URL below, or paste it in the input box.
-  - If you want to change pairings, edit drawAssignments.
-  - Names order determines wheel sector positions.
-*/
+    function checkPassword() {
+      const input = document.getElementById('password').value.trim();
+      const error = document.getElementById('error');
 
-// === CONFIG ===
-const WISHLIST_FORM_URL = ""; // optional: paste your Google Form URL here
-const names = ["Isaiah","Andrew","Justin","Haddon","Grayson","Ainsley","Jon","Lexi"];
-
-// Pre-rigged pairings (you can change these)
-const drawAssignments = {
-  Isaiah: "Grayson",
-  Andrew: "Jon",
-  Justin: "Haddon",
-  Haddon: "Justin",
-  Grayson: "Andrew",
-  Ainsley: "Lexi",
-  Jon: "Isaiah",
-  Lexi: "Ainsley"
-};
-// =================
-
-/* small helper */
-const qs = (s)=>document.querySelector(s);
-const qsa = (s)=>Array.from(document.querySelectorAll(s));
-
-/* populate wishlist form link from constant and input */
-const wishlistInput = qs('#wishlistUrl');
-const openFormBtn = qs('#openFormBtn');
-wishlistInput.value = WISHLIST_FORM_URL;
-function updateFormLink(){
-  const val = wishlistInput.value.trim();
-  if(val && val.startsWith("http")) openFormBtn.href = val;
-  else openFormBtn.href = "#";
-}
-wishlistInput.addEventListener('input', updateFormLink);
-updateFormLink();
-
-/* populate name picker and names list */
-const picker = qs('#picker');
-const namesList = qs('#namesList');
-names.forEach(n=>{
-  const o = document.createElement('option'); o.value = n; o.textContent = n; picker.appendChild(o);
-  const pill = document.createElement('div'); pill.className='name-pill'; pill.textContent = n; namesList.appendChild(pill);
-});
-
-/* wheel drawing */
-const wheelSvg = qs('#wheel');
-const sectorCount = names.length;
-const sectorAngle = 360 / sectorCount;
-const R = 200;
-
-function polarToXY(angleDeg, radius){
-  const a = (angleDeg-90) * Math.PI/180;
-  return [Math.cos(a)*radius, Math.sin(a)*radius];
-}
-
-function drawWheel(){
-  wheelSvg.innerHTML = '';
-  // background circle
-  const bg = document.createElementNS('http://www.w3.org/2000/svg','circle');
-  bg.setAttribute('r', R);
-  bg.setAttribute('fill','url(#grad)');
-  // gradient
-  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-  const grad = document.createElementNS('http://www.w3.org/2000/svg','radialGradient');
-  grad.setAttribute('id','grad');
-  const stop1 = document.createElementNS('http://www.w3.org/2000/svg','stop'); stop1.setAttribute('offset','0%'); stop1.setAttribute('stop-color','#07121a');
-  const stop2 = document.createElementNS('http://www.w3.org/2000/svg','stop'); stop2.setAttribute('offset','100%'); stop2.setAttribute('stop-color','#072226');
-  grad.appendChild(stop1); grad.appendChild(stop2);
-  defs.appendChild(grad);
-  wheelSvg.appendChild(defs);
-  wheelSvg.appendChild(bg);
-
-  for(let i=0;i<sectorCount;i++){
-    const startAngle = i*sectorAngle;
-    const endAngle = (i+1)*sectorAngle;
-    const large = endAngle - startAngle <= 180 ? 0:1;
-    const [x1,y1] = polarToXY(startAngle,R);
-    const [x2,y2] = polarToXY(endAngle,R);
-    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-    // choose colors alternating festive palette
-    const colors = ["#9b1c1c","#0b6623","#b45309","#0f766e"]; // red, green, gold, teal
-    path.setAttribute('d', `M 0 0 L ${x1} ${y1} A ${R} ${R} 0 ${large} 1 ${x2} ${y2} Z`);
-    path.setAttribute('fill', colors[i % colors.length]);
-    wheelSvg.appendChild(path);
-
-    // label
-    const mid = startAngle + sectorAngle/2;
-    const [lx,ly] = polarToXY(mid, R * 0.62);
-    const text = document.createElementNS('http://www.w3.org/2000/svg','text');
-    text.setAttribute('x', lx);
-    text.setAttribute('y', ly);
-    text.setAttribute('text-anchor', 'middle');
-    text.setAttribute('alignment-baseline','middle');
-    text.setAttribute('fill','#fff');
-    text.setAttribute('font-size','16');
-    text.setAttribute('font-weight','700');
-    text.setAttribute('transform', `rotate(${mid} ${lx} ${ly})`);
-    text.textContent = names[i];
-    wheelSvg.appendChild(text);
-  }
-}
-drawWheel();
-
-/* spinning logic */
-const wheelEl = qs('#wheel');
-const spinBtn = qs('#spinBtn');
-const resultText = qs('#resultText');
-const subText = qs('#subText');
-
-// store spun values in localStorage under key 'cousin_spun_<Name>' => assignedName
-function hasSpun(name){ return !!localStorage.getItem('cousin_spun_' + name); }
-function recordSpin(name, assigned){ localStorage.setItem('cousin_spun_' + name, assigned); }
-
-function showAlreadySpun(name){
-  const assigned = localStorage.getItem('cousin_spun_' + name);
-  resultText.textContent = `${name}, you already spun — you draw ${assigned}.`;
-  subText.textContent = 'Keep it secret! (If you need the wishlist, open the form link above.)';
-  spinBtn.disabled = true;
-  picker.disabled = true;
-}
-
-function sectorIndexFor(name){
-  return names.indexOf(name);
-}
-
-function spinToTarget(targetName, callback){
-  // find index of target
-  const idx = sectorIndexFor(targetName);
-  if(idx < 0){ console.error("target not found", targetName); return; }
-  // sector center angle measured from top (we used -90 offset earlier)
-  const targetAngle = idx * sectorAngle + sectorAngle/2;
-  // CSS rotate is clockwise positive; we want the pointer at top (0 deg)
-  // compute rotation so that the target sector's center lines up with 0deg (pointer)
-  // convert to degrees to rotate the wheel: rotate = 360 - targetAngle
-  const sectorCenter = targetAngle;
-  const finalRotation = 360 * 6 + (360 - sectorCenter) + (Math.random()*8 - 4); // add tiny randomness to visual
-  // apply transform
-  wheelEl.style.transition = 'transform 5s cubic-bezier(.12,.8,.32,1)';
-  wheelEl.style.transform = `rotate(${finalRotation}deg)`;
-  // when transition ends, normalize rotation and call back
-  const onEnd = () => {
-    wheelEl.removeEventListener('transitionend', onEnd);
-    // normalize rotation to exact sector to avoid cumulative transforms
-    const normalized = (360 - sectorCenter) % 360;
-    wheelEl.style.transition = 'none';
-    wheelEl.style.transform = `rotate(${normalized}deg)`;
-    // tiny timeout to let style stick
-    setTimeout(()=>{ if(callback) callback(); }, 20);
-  };
-  wheelEl.addEventListener('transitionend', onEnd);
-}
-
-/* hook spin button */
-spinBtn.addEventListener('click', async ()=>{
-  const name = picker.value;
-  if(!name){ alert('Please select your name first.'); return; }
-  if(hasSpun(name)){ showAlreadySpun(name); return; }
-  // compute assigned (pre-rigged)
-  const assigned = drawAssignments[name];
-  if(!assigned){ alert('No assignment configured for ' + name); return; }
-
-  // disable UI while spinning
-  spinBtn.disabled = true;
-  picker.disabled = true;
-  resultText.textContent = `Spinning for ${name}… 🎡`;
-  subText.textContent = '';
-
-  // animate spin to assigned person
-  spinToTarget(assigned, ()=>{
-    // confetti
-    confetti({
-      particleCount: 140,
-      angle: 90,
-      spread: 90,
-      origin: { x: 0.5, y: 0.35 }
-    });
-    // show result
-    resultText.textContent = `Great! ${name}, you draw → ${assigned} 🎁`;
-    subText.textContent = 'Keep it secret and check the wishlist form for ideas.';
-    // record in localStorage
-    recordSpin(name, assigned);
-  });
-});
-
-/* if picker selection already spun in this browser, show record */
-picker.addEventListener('change', ()=>{
-  const name = picker.value;
-  if(!name) { resultText.textContent = 'No one has spun yet.'; subText.textContent=''; spinBtn.disabled=false; picker.disabled=false; return; }
-  if(hasSpun(name)){ showAlreadySpun(name); }
-  else {
-    resultText.textContent = `${name}, ready to spin!`;
-    subText.textContent = 'One spin per browser.';
-    spinBtn.disabled = false;
-    picker.disabled = false;
-  }
-});
-
-/* on load, if a name is already chosen (persisted), reflect that */
-window.addEventListener('load', ()=>{
-  // if any localStorage entries exist, don't auto-block entire page (only selected user)
-  // keep defaults
-  // Also, ensure wheel is in a neutral rotation
-  wheelEl.style.transform = 'rotate(0deg)';
-});
-
-/* small nicety: if someone inspects the page, the pairs are in code — but that's OK per your chosen approach */
-</script>
+      if (codes[input]) {
+        sessionStorage.setItem('cousinName', codes[input]);
+        window.location.href = 'wheel.html';
+      } else {
+        error.textContent = "Invalid code. Try again.";
+      }
+    }
+  </script>
 </body>
 </html>
+
