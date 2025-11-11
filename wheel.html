@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(120deg, #ff512f, #dd2476);
+      background: linear-gradient(180deg, #c31432, #240b36);
       color: white;
       text-align: center;
       display: flex;
@@ -16,16 +16,17 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
+      overflow: hidden;
     }
     #wheel {
-      width: 300px; height: 300px;
+      width: 340px; height: 340px;
       border-radius: 50%;
-      border: 10px solid gold;
+      border: 12px solid gold;
       position: relative;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       box-shadow: 0 0 30px rgba(0,0,0,0.5);
-      transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+      transition: transform 6s cubic-bezier(0.1, 0.7, 0.1, 1);
     }
     .slice {
       position: absolute;
@@ -34,13 +35,13 @@
       top: 50%;
       left: 50%;
       transform-origin: 0% 0%;
-      background: gold;
-      color: #222;
-      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #222;
+      text-shadow: 0 0 3px rgba(255,255,255,0.6);
     }
     #spinBtn {
       padding: 10px 25px;
@@ -61,7 +62,7 @@
       border-right: 15px solid transparent;
       border-bottom: 25px solid gold;
       position: absolute;
-      top: 30px;
+      top: 40px;
     }
   </style>
 </head>
@@ -80,7 +81,12 @@
       Grayson: "Andrew",
       Ainsley: "Lexi",
       Jon: "Isaiah",
-      Lexi: "Ainsley"
+      Lexi: "Ainsley",
+      // Test users just loop to themselves
+      Test01:"Test02",Test02:"Test03",Test03:"Test04",Test04:"Test05",
+      Test05:"Test06",Test06:"Test07",Test07:"Test08",Test08:"Test09",
+      Test09:"Test10",Test10:"Test11",Test11:"Test12",Test12:"Test13",
+      Test13:"Test14",Test14:"Test15",Test15:"Test16",Test16:"Test01"
     };
 
     const names = Object.keys(pairings);
@@ -93,12 +99,13 @@
       window.location.href = "index.html";
     }
 
-    // Build wheel slices
+    // Build slices (festive red and green)
     names.forEach((n, i) => {
       const slice = document.createElement("div");
       slice.className = "slice";
-      slice.style.background = i % 2 === 0 ? "#ffcc00" : "#ff4444";
-      slice.style.transform = `rotate(${(360 / names.length) * i}deg) skewY(${90 - 360 / names.length}deg)`;
+      slice.style.background = i % 2 === 0 ? "#ff5555" : "#66ff66";
+      const rotation = (360 / names.length) * i;
+      slice.style.transform = `rotate(${rotation}deg) skewY(${90 - 360 / names.length}deg)`;
       slice.textContent = n;
       wheel.appendChild(slice);
     });
@@ -113,40 +120,43 @@
     spinBtn.addEventListener("click", () => {
       spinBtn.disabled = true;
       const assigned = pairings[name];
-      const angle = 360 * 5 + (names.indexOf(assigned) * (360 / names.length)) + (360 / names.length / 2);
-      wheel.style.transform = `rotate(-${angle}deg)`;
+      const targetIndex = names.indexOf(assigned);
+      const segmentAngle = 360 / names.length;
+      const randomOffset = Math.random() * segmentAngle * 0.6;
+      const finalAngle = 360 * 8 + (targetIndex * segmentAngle + segmentAngle / 2 + randomOffset);
+      wheel.style.transform = `rotate(-${finalAngle}deg)`;
+
       setTimeout(() => {
-        confetti();
+        launchConfetti();
         result.textContent = `${name}, you drew ${assigned}! 🎉`;
         localStorage.setItem(storageKey, assigned);
-      }, 4500);
+      }, 6500);
     });
 
-    // simple confetti
-    function confetti() {
-      for (let i = 0; i < 60; i++) {
+    function launchConfetti() {
+      for (let i = 0; i < 80; i++) {
         const c = document.createElement("div");
         c.style.position = "fixed";
-        c.style.width = "10px";
-        c.style.height = "10px";
+        c.style.width = "8px";
+        c.style.height = "8px";
         c.style.background = ["#ff0","#f00","#0f0","#0ff","#fff"][Math.floor(Math.random()*5)];
-        c.style.top = "0px";
+        c.style.top = "-10px";
         c.style.left = Math.random()*100 + "vw";
-        c.style.opacity = 0.8;
+        c.style.opacity = 0.9;
         c.style.borderRadius = "50%";
-        c.style.animation = `fall${i} 3s ease-in forwards`;
+        c.style.zIndex = "9999";
         document.body.appendChild(c);
-        const angle = Math.random() * 100;
         const keyframes = `@keyframes fall${i} {
           to {
-            transform: translate(${angle-50}vw, 100vh) rotate(720deg);
+            transform: translate(${(Math.random()*100)-50}vw, 100vh) rotate(720deg);
             opacity: 0;
           }
         }`;
         const style = document.createElement("style");
         style.innerHTML = keyframes;
         document.head.appendChild(style);
-        setTimeout(() => c.remove(), 3000);
+        c.style.animation = `fall${i} ${3 + Math.random()*2}s ease-in forwards`;
+        setTimeout(() => c.remove(), 5000);
       }
     }
   </script>
