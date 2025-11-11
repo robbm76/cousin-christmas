@@ -1,164 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🎄 Cousins Gift Draw 🎁</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(180deg, #c31432, #240b36);
-      color: white;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-    }
-    #wheel {
-      width: 340px; height: 340px;
-      border-radius: 50%;
-      border: 12px solid gold;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 30px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
-      transition: transform 6s cubic-bezier(0.1, 0.7, 0.1, 1);
-    }
-    .slice {
-      position: absolute;
-      width: 50%;
-      height: 50%;
-      top: 50%;
-      left: 50%;
-      transform-origin: 0% 0%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: #222;
-      text-shadow: 0 0 3px rgba(255,255,255,0.6);
-    }
-    #spinBtn {
-      padding: 10px 25px;
-      font-size: 1.1rem;
-      background: #00ffcc;
-      color: #222;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    #spinBtn:hover { background: #aaffee; }
-    #result { font-size: 1.5rem; margin-top: 20px; font-weight: bold; }
-    #pointer {
-      width: 0; height: 0;
-      border-left: 15px solid transparent;
-      border-right: 15px solid transparent;
-      border-bottom: 25px solid gold;
-      position: absolute;
-      top: 40px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🎄 Cousins Gift Wheel 🎁</title>
+<style>
+  body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: radial-gradient(circle at top, #d92424, #700303);
+    color: #fff;
+    text-align: center;
+    padding: 2rem;
+    background-image: url('https://i.imgur.com/jUswCwr.png'); /* festive background */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+  h1 { text-shadow: 2px 2px 6px #000; }
+  .wheel-container { margin: 2rem auto; position: relative; width: 350px; height: 350px; }
+  canvas { border-radius: 50%; box-shadow: 0 0 25px rgba(255,255,255,0.3); }
+  .spin-button { background: #2ecc71; border: none; color: white; font-size: 1.2rem; padding: 10px 25px; border-radius: 10px; cursor: pointer; margin-top: 1rem; transition: background 0.3s; }
+  .spin-button:hover { background: #27ae60; }
+  .pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-bottom: 40px solid gold; position: absolute; top: -35px; left: 50%; transform: translateX(-50%); }
+  #result { font-size: 1.5rem; margin-top: 1rem; color: #fffae6; }
+</style>
 </head>
 <body>
-  <div id="pointer"></div>
-  <div id="wheel"></div>
-  <button id="spinBtn">🎅 Spin the Wheel!</button>
-  <div id="result"></div>
+<h1>🎅 Cousins Gift Exchange 2025 🎁</h1>
+<div class="wheel-container">
+  <div class="pointer"></div>
+  <canvas id="wheelCanvas" width="350" height="350"></canvas>
+</div>
+<button class="spin-button" id="spinButton">🎄 Spin the Wheel!</button>
+<div id="result"></div>
 
-  <script>
-    const pairings = {
-      Isaiah: "Grayson",
-      Andrew: "Jon",
-      Justin: "Haddon",
-      Haddon: "Justin",
-      Grayson: "Andrew",
-      Ainsley: "Lexi",
-      Jon: "Isaiah",
-      Lexi: "Ainsley",
-      // Test users just loop to themselves
-      Test01:"Test02",Test02:"Test03",Test03:"Test04",Test04:"Test05",
-      Test05:"Test06",Test06:"Test07",Test07:"Test08",Test08:"Test09",
-      Test09:"Test10",Test10:"Test11",Test11:"Test12",Test12:"Test13",
-      Test13:"Test14",Test14:"Test15",Test15:"Test16",Test16:"Test01"
-    };
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<script>
+  // Cousin assignments (rigged)
+  const assignments = {
+    "Isaiah": "Grayson",
+    "Andrew": "Jon",
+    "Justin": "Haddon",
+    "Haddon": "Justin",
+    "Grayson": "Isaiah",
+    "Ainsley": "Lexi",
+    "Jon": "Andrew",
+    "Lexi": "Ainsley"
+  };
 
-    const names = Object.keys(pairings);
-    const wheel = document.getElementById("wheel");
-    const spinBtn = document.getElementById("spinBtn");
-    const result = document.getElementById("result");
-    const name = sessionStorage.getItem("cousinName");
+  const names = Object.values(assignments);
+  const colors = ["#FF4C4C","#FFD700","#28B463","#3498DB","#F39C12","#AF7AC5","#E67E22","#1ABC9C"];
+  const sliceCount = names.length;
+  const sliceAngle = (2 * Math.PI) / sliceCount;
+  let rotation = 0;
 
-    if (!name) {
-      window.location.href = "index.html";
+  const wheelCanvas = document.getElementById("wheelCanvas");
+  const ctx = wheelCanvas.getContext("2d");
+
+  function drawWheel() {
+    for (let i = 0; i < sliceCount; i++) {
+      const startAngle = i * sliceAngle;
+      ctx.beginPath();
+      ctx.moveTo(175,175);
+      ctx.arc(175,175,175,startAngle,startAngle+sliceAngle);
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fill();
+      ctx.save();
+      ctx.translate(175,175);
+      ctx.rotate(startAngle + sliceAngle / 2);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#fff";
+      ctx.font = "bold 18px Comic Sans MS";
+      ctx.fillText(names[i], 160, 5);
+      ctx.restore();
     }
+  }
 
-    // Build slices (festive red and green)
-    names.forEach((n, i) => {
-      const slice = document.createElement("div");
-      slice.className = "slice";
-      slice.style.background = i % 2 === 0 ? "#ff5555" : "#66ff66";
-      const rotation = (360 / names.length) * i;
-      slice.style.transform = `rotate(${rotation}deg) skewY(${90 - 360 / names.length}deg)`;
-      slice.textContent = n;
-      wheel.appendChild(slice);
-    });
+  drawWheel();
 
-    const storageKey = "cousin_spun_" + name;
+  // Retrieve current user from sessionStorage
+  const currentUser = sessionStorage.getItem("cousinName");
+  if (!currentUser) { window.location.href = "index.html"; }
 
-    if (localStorage.getItem(storageKey)) {
-      result.textContent = `${name}, you already spun — you drew ${pairings[name]} 🎁`;
-      spinBtn.disabled = true;
-    }
+  const spinButton = document.getElementById("spinButton");
+  const resultDiv = document.getElementById("result");
 
-    spinBtn.addEventListener("click", () => {
-      spinBtn.disabled = true;
-      const assigned = pairings[name];
-      const targetIndex = names.indexOf(assigned);
-      const segmentAngle = 360 / names.length;
-      const randomOffset = Math.random() * segmentAngle * 0.6;
-      const finalAngle = 360 * 8 + (targetIndex * segmentAngle + segmentAngle / 2 + randomOffset);
-      wheel.style.transform = `rotate(-${finalAngle}deg)`;
+  const storageKey = "cousin_spun_" + currentUser;
+  if (localStorage.getItem(storageKey)) {
+    resultDiv.textContent = `${currentUser}, you already spun — you drew ${assignments[currentUser]} 🎁`;
+    spinButton.disabled = true;
+  }
 
-      setTimeout(() => {
-        launchConfetti();
-        result.textContent = `${name}, you drew ${assigned}! 🎉`;
-        localStorage.setItem(storageKey, assigned);
-      }, 6500);
-    });
+  spinButton.addEventListener("click", () => {
+    spinButton.disabled = true;
+    const targetName = assignments[currentUser];
+    const index = names.indexOf(targetName);
+    const anglePerSlice = 360 / sliceCount;
+    const randomSpins = 5 + Math.random() * 2;
+    const targetAngle = 360 - (index * anglePerSlice + anglePerSlice / 2);
 
-    function launchConfetti() {
-      for (let i = 0; i < 80; i++) {
-        const c = document.createElement("div");
-        c.style.position = "fixed";
-        c.style.width = "8px";
-        c.style.height = "8px";
-        c.style.background = ["#ff0","#f00","#0f0","#0ff","#fff"][Math.floor(Math.random()*5)];
-        c.style.top = "-10px";
-        c.style.left = Math.random()*100 + "vw";
-        c.style.opacity = 0.9;
-        c.style.borderRadius = "50%";
-        c.style.zIndex = "9999";
-        document.body.appendChild(c);
-        const keyframes = `@keyframes fall${i} {
-          to {
-            transform: translate(${(Math.random()*100)-50}vw, 100vh) rotate(720deg);
-            opacity: 0;
-          }
-        }`;
-        const style = document.createElement("style");
-        style.innerHTML = keyframes;
-        document.head.appendChild(style);
-        c.style.animation = `fall${i} ${3 + Math.random()*2}s ease-in forwards`;
-        setTimeout(() => c.remove(), 5000);
+    const finalAngle = randomSpins * 360 + targetAngle;
+    const duration = 5000;
+    let start = null;
+
+    function animate(timestamp) {
+      if (!start) start = timestamp;
+      const progress = (timestamp - start)/duration;
+      if (progress < 1) {
+        const eased = 1 - Math.pow(1 - progress,3);
+        rotation = eased * finalAngle;
+        ctx.clearRect(0,0,350,350);
+        ctx.save();
+        ctx.translate(175,175);
+        ctx.rotate((rotation * Math.PI)/180);
+        ctx.translate(-175,-175);
+        drawWheel();
+        ctx.restore();
+        requestAnimationFrame(animate);
+      } else {
+        showResult(targetName);
       }
     }
-  </script>
+    requestAnimationFrame(animate);
+  });
+
+  function showResult(name) {
+    resultDiv.textContent = `🎁 ${currentUser}, you’re giving a gift to ${name}! 🎉`;
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    localStorage.setItem(storageKey, name);
+  }
+</script>
 </body>
 </html>
+
