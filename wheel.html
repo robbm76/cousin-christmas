@@ -131,3 +131,10 @@
   });
 
   function showResult(name) {
+    resultDiv.textContent = `🎁 ${currentUser}, you’re giving a gift to ${name}! 🎉`;
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    localStorage.setItem(storageKey,name);
+  }
+</script>
+</body>
+</html>
