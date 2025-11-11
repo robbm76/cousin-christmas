@@ -16,27 +16,30 @@
     background-position: center;
     overflow: hidden;
   }
+
   h1 { text-shadow: 2px 2px 6px #000; }
+  #welcome { font-size: 1.4rem; margin-top: 1rem; margin-bottom: 1rem; }
   .wheel-container { margin: 2rem auto; position: relative; width: 350px; height: 350px; }
   canvas { border-radius: 50%; box-shadow: 0 0 25px rgba(255,255,255,0.3); }
   .spin-button { background: #2ecc71; border: none; color: white; font-size: 1.2rem; padding: 10px 25px; border-radius: 10px; cursor: pointer; margin-top: 1rem; transition: background 0.3s; }
   .spin-button:hover { background: #27ae60; }
-  .pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-bottom: 40px solid gold; position: absolute; top: -35px; left: 50%; transform: translateX(-50%); }
+  .pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid gold; position: absolute; top: 350px; left: 50%; transform: translateX(-50%); } /* points down */
   #result { font-size: 1.5rem; margin-top: 1rem; color: #fffae6; }
 </style>
 </head>
 <body>
 <h1>🎅 Cousins Gift Exchange 2025 🎁</h1>
+<div id="welcome"></div>
 <div class="wheel-container">
-  <div class="pointer"></div>
   <canvas id="wheelCanvas" width="350" height="350"></canvas>
+  <div class="pointer"></div>
 </div>
 <button class="spin-button" id="spinButton">🎄 Spin the Wheel!</button>
 <div id="result"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
-  // Cousin assignments (rigged)
+  // Cousin assignments
   const assignments = {
     "Isaiah": "Grayson",
     "Andrew": "Jon",
@@ -78,9 +81,10 @@
 
   drawWheel();
 
-  // Retrieve current user from sessionStorage
   const currentUser = sessionStorage.getItem("cousinName");
   if (!currentUser) { window.location.href = "index.html"; }
+
+  document.getElementById("welcome").textContent = `Welcome ${currentUser}! Are you ready to draw a name?`;
 
   const spinButton = document.getElementById("spinButton");
   const resultDiv = document.getElementById("result");
@@ -96,19 +100,21 @@
     const targetName = assignments[currentUser];
     const index = names.indexOf(targetName);
     const anglePerSlice = 360 / sliceCount;
-    const randomSpins = 5 + Math.random() * 2;
-    const targetAngle = 360 - (index * anglePerSlice + anglePerSlice / 2);
 
-    const finalAngle = randomSpins * 360 + targetAngle;
+    // Calculate final rotation so the name stops UNDER the pointer (pointer is at bottom)
+    const targetAngle = 180 + (index * anglePerSlice + anglePerSlice/2);
+
+    const randomSpins = 5 + Math.random()*2;
+    const finalAngle = randomSpins*360 + targetAngle;
     const duration = 5000;
     let start = null;
 
     function animate(timestamp) {
       if (!start) start = timestamp;
-      const progress = (timestamp - start)/duration;
+      const progress = (timestamp-start)/duration;
       if (progress < 1) {
-        const eased = 1 - Math.pow(1 - progress,3);
-        rotation = eased * finalAngle;
+        const eased = 1 - Math.pow(1-progress,3);
+        rotation = eased*finalAngle;
         ctx.clearRect(0,0,350,350);
         ctx.save();
         ctx.translate(175,175);
@@ -125,11 +131,3 @@
   });
 
   function showResult(name) {
-    resultDiv.textContent = `🎁 ${currentUser}, you’re giving a gift to ${name}! 🎉`;
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-    localStorage.setItem(storageKey, name);
-  }
-</script>
-</body>
-</html>
-
