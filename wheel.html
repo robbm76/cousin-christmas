@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🎄 Cousins Gift Wheel 🎁</title>
+<title>🎄 Cousins Gift Reveal 🎁</title>
 <style>
   body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
@@ -19,28 +18,80 @@
   }
 
   h1 { text-shadow: 2px 2px 6px #000; }
-  #welcome { font-size: 1.4rem; margin-top: 1rem; margin-bottom: 1rem; }
-  .wheel-container { margin: 2rem auto; position: relative; width: 350px; height: 350px; }
-  canvas { border-radius: 50%; box-shadow: 0 0 25px rgba(255,255,255,0.3); }
-  .spin-button { background: #2ecc71; border: none; color: white; font-size: 1.2rem; padding: 10px 25px; border-radius: 10px; cursor: pointer; margin-top: 1rem; transition: background 0.3s; }
-  .spin-button:hover { background: #27ae60; }
-  .pointer { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid gold; position: absolute; top: 350px; left: 50%; transform: translateX(-50%); } /* points down */
-  #result { font-size: 1.5rem; margin-top: 1rem; color: #fffae6; }
+
+  #welcome { font-size: 1.4rem; margin-bottom: 2rem; }
+
+  .box-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 1rem auto;
+  }
+
+  #giftBox {
+    width: 100%;
+    height: 100%;
+    background: url('https://i.imgur.com/TS9qQ6J.png') no-repeat center/cover;
+    transform-origin: center bottom;
+    cursor: pointer;
+  }
+
+  #lid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://i.imgur.com/6KfHfMI.png') no-repeat center/cover;
+    transform-origin: top center;
+    transition: transform 0.8s ease;
+  }
+
+  #nameCard {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(255,255,255,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    text-shadow: 2px 2px 5px #000;
+    transition: transform 0.8s ease, opacity 0.8s ease;
+    opacity: 0;
+  }
+
+  #spinButton {
+    background: #2ecc71;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px 25px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 1rem;
+  }
+  #spinButton:hover { background: #27ae60; }
 </style>
 </head>
 <body>
+
 <h1>🎅 Cousins Gift Exchange 2025 🎁</h1>
 <div id="welcome"></div>
-<div class="wheel-container">
-  <canvas id="wheelCanvas" width="350" height="350"></canvas>
-  <div class="pointer"></div>
+
+<div class="box-container">
+  <div id="giftBox"></div>
+  <div id="lid"></div>
+  <div id="nameCard"></div>
 </div>
-<button class="spin-button" id="spinButton">🎄 Spin the Wheel!</button>
-<div id="result"></div>
+
+<button id="spinButton">🎄 Open Your Gift!</button>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 <script>
-  // Cousin assignments
+  // Assignments
   const assignments = {
     "Isaiah": "Grayson",
     "Andrew": "Jon",
@@ -52,89 +103,55 @@
     "Lexi": "Ainsley"
   };
 
-  const names = Object.values(assignments);
-  const colors = ["#FF4C4C","#FFD700","#28B463","#3498DB","#F39C12","#AF7AC5","#E67E22","#1ABC9C"];
-  const sliceCount = names.length;
-  const sliceAngle = (2 * Math.PI) / sliceCount;
-  let rotation = 0;
-
-  const wheelCanvas = document.getElementById("wheelCanvas");
-  const ctx = wheelCanvas.getContext("2d");
-
-  function drawWheel() {
-    for (let i = 0; i < sliceCount; i++) {
-      const startAngle = i * sliceAngle;
-      ctx.beginPath();
-      ctx.moveTo(175,175);
-      ctx.arc(175,175,175,startAngle,startAngle+sliceAngle);
-      ctx.fillStyle = colors[i % colors.length];
-      ctx.fill();
-      ctx.save();
-      ctx.translate(175,175);
-      ctx.rotate(startAngle + sliceAngle / 2);
-      ctx.textAlign = "right";
-      ctx.fillStyle = "#fff";
-      ctx.font = "bold 18px Comic Sans MS";
-      ctx.fillText(names[i], 160, 5);
-      ctx.restore();
-    }
-  }
-
-  drawWheel();
-
   const currentUser = sessionStorage.getItem("cousinName");
   if (!currentUser) { window.location.href = "index.html"; }
 
   document.getElementById("welcome").textContent = `Welcome ${currentUser}! Are you ready to draw a name?`;
 
   const spinButton = document.getElementById("spinButton");
-  const resultDiv = document.getElementById("result");
+  const lid = document.getElementById("lid");
+  const nameCard = document.getElementById("nameCard");
 
   const storageKey = "cousin_spun_" + currentUser;
   if (localStorage.getItem(storageKey)) {
-    resultDiv.textContent = `${currentUser}, you already spun — you drew ${assignments[currentUser]} 🎁`;
+    nameCard.textContent = assignments[currentUser];
+    nameCard.style.transform = "translate(-50%, -50%) scale(1)";
+    nameCard.style.opacity = 1;
     spinButton.disabled = true;
   }
 
   spinButton.addEventListener("click", () => {
     spinButton.disabled = true;
-    const targetName = assignments[currentUser];
-    const index = names.indexOf(targetName);
-    const anglePerSlice = 360 / sliceCount;
 
-    // Calculate final rotation so the name stops UNDER the pointer (pointer is at bottom)
-    const targetAngle = 180 + (index * anglePerSlice + anglePerSlice/2);
-
-    const randomSpins = 5 + Math.random()*2;
-    const finalAngle = randomSpins*360 + targetAngle;
-    const duration = 5000;
-    let start = null;
-
-    function animate(timestamp) {
-      if (!start) start = timestamp;
-      const progress = (timestamp-start)/duration;
-      if (progress < 1) {
-        const eased = 1 - Math.pow(1-progress,3);
-        rotation = eased*finalAngle;
-        ctx.clearRect(0,0,350,350);
-        ctx.save();
-        ctx.translate(175,175);
-        ctx.rotate((rotation * Math.PI)/180);
-        ctx.translate(-175,-175);
-        drawWheel();
-        ctx.restore();
-        requestAnimationFrame(animate);
-      } else {
-        showResult(targetName);
+    // Animate shaking
+    let shakeTimes = 0;
+    const giftBox = document.getElementById("giftBox");
+    const shakeInterval = setInterval(() => {
+      giftBox.style.transform = `rotate(${Math.random()*10-5}deg)`;
+      shakeTimes++;
+      if (shakeTimes > 15) {
+        clearInterval(shakeInterval);
+        giftBox.style.transform = "rotate(0deg)";
+        openLid();
       }
-    }
-    requestAnimationFrame(animate);
+    }, 80);
   });
 
-  function showResult(name) {
-    resultDiv.textContent = `🎁 ${currentUser}, you’re giving a gift to ${name}! 🎉`;
+  function openLid() {
+    lid.style.transform = "rotateX(70deg)";
+    setTimeout(() => revealName(), 800);
+  }
+
+  function revealName() {
+    const assigned = assignments[currentUser];
+    nameCard.textContent = assigned;
+    nameCard.style.transform = "translate(-50%, -50%) scale(1)";
+    nameCard.style.opacity = 1;
+
+    // Confetti
     confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-    localStorage.setItem(storageKey,name);
+
+    localStorage.setItem(storageKey, assigned);
   }
 </script>
 </body>
