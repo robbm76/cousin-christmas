@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎄 Cousins Gift Draw 🎁</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(120deg, #ff512f, #dd2476);
+      color: white;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #wheel {
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 10px solid gold;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      transition: transform 4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    .slice {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      background: gold;
+      color: #222;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    #spinBtn {
+      padding: 10px 25px;
+      font-size: 1.1rem;
+      background: #00ffcc;
+      color: #222;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    #spinBtn:hover { background: #aaffee; }
+    #result { font-size: 1.5rem; margin-top: 20px; font-weight: bold; }
+    #pointer {
+      width: 0; height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 25px solid gold;
+      position: absolute;
+      top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div id="pointer"></div>
+  <div id="wheel"></div>
+  <button id="spinBtn">🎅 Spin the Wheel!</button>
+  <div id="result"></div>
+
+  <script>
+    const pairings = {
+      Isaiah: "Grayson",
+      Andrew: "Jon",
+      Justin: "Haddon",
+      Haddon: "Justin",
+      Grayson: "Andrew",
+      Ainsley: "Lexi",
+      Jon: "Isaiah",
+      Lexi: "Ainsley"
+    };
+
+    const names = Object.keys(pairings);
+    const wheel = document.getElementById("wheel");
+    const spinBtn = document.getElementById("spinBtn");
+    const result = document.getElementById("result");
+    const name = sessionStorage.getItem("cousinName");
+
+    if (!name) {
+      window.location.href = "index.html";
+    }
+
+    // Build wheel slices
+    names.forEach((n, i) => {
+      const slice = document.createElement("div");
+      slice.className = "slice";
+      slice.style.background = i % 2 === 0 ? "#ffcc00" : "#ff4444";
+      slice.style.transform = `rotate(${(360 / names.length) * i}deg) skewY(${90 - 360 / names.length}deg)`;
+      slice.textContent = n;
+      wheel.appendChild(slice);
+    });
+
+    const storageKey = "cousin_spun_" + name;
+
+    if (localStorage.getItem(storageKey)) {
+      result.textContent = `${name}, you already spun — you drew ${pairings[name]} 🎁`;
+      spinBtn.disabled = true;
+    }
+
+    spinBtn.addEventListener("click", () => {
+      spinBtn.disabled = true;
+      const assigned = pairings[name];
+      const angle = 360 * 5 + (names.indexOf(assigned) * (360 / names.length)) + (360 / names.length / 2);
+      wheel.style.transform = `rotate(-${angle}deg)`;
+      setTimeout(() => {
+        confetti();
+        result.textContent = `${name}, you drew ${assigned}! 🎉`;
+        localStorage.setItem(storageKey, assigned);
+      }, 4500);
+    });
+
+    // simple confetti
+    function confetti() {
+      for (let i = 0; i < 60; i++) {
+        const c = document.createElement("div");
+        c.style.position = "fixed";
+        c.style.width = "10px";
+        c.style.height = "10px";
+        c.style.background = ["#ff0","#f00","#0f0","#0ff","#fff"][Math.floor(Math.random()*5)];
+        c.style.top = "0px";
+        c.style.left = Math.random()*100 + "vw";
+        c.style.opacity = 0.8;
+        c.style.borderRadius = "50%";
+        c.style.animation = `fall${i} 3s ease-in forwards`;
+        document.body.appendChild(c);
+        const angle = Math.random() * 100;
+        const keyframes = `@keyframes fall${i} {
+          to {
+            transform: translate(${angle-50}vw, 100vh) rotate(720deg);
+            opacity: 0;
+          }
+        }`;
+        const style = document.createElement("style");
+        style.innerHTML = keyframes;
+        document.head.appendChild(style);
+        setTimeout(() => c.remove(), 3000);
+      }
+    }
+  </script>
+</body>
+</html>
